@@ -1,16 +1,29 @@
 import TodoDa from './todo.da';
+import Songs from './todo.model';
 
 export default {
-  getAll,
+  search,
+  get,
   update,
   create,
   remove
 };
 
-function getAll(req, res) {
-  TodoDa.getAll()
-    .then(todos => res.status(200).json(todos))
-    .catch(() => res.sendStatus(422));
+function search(req, res) {
+  Songs.find({}, (err, songs) => {
+    if (err) res.sendStatus(400);
+    res.status(200).json(songs);
+  });
+}
+
+async function get(req, res) {
+  try {
+    const song = await Songs.find({ _id: req.params.id });
+    res.status(200).json(song);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(400);
+  }
 }
 
 function update(req, res) {
@@ -19,15 +32,18 @@ function update(req, res) {
 
   TodoDa.update(id, name, completed)
     .then(() => res.sendStatus(200))
-    .catch(() => res.sendStatus(422));
+    .catch(() => res.sendStatus(400));
 }
 
-function create(req, res) {
-  const { name } = req.body;
-
-  TodoDa.create(name)
-    .then(todo => res.status(200).json(todo))
-    .catch(() => res.sendStatus(422));
+async function create(req, res) {
+  try {
+    const song = new Songs(req.body);
+    const savedSong = await song.save();
+    res.status(201).json(savedSong);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(400);
+  }
 }
 
 function remove(req, res) {
@@ -35,5 +51,5 @@ function remove(req, res) {
 
   TodoDa.remove(id)
     .then(() => res.sendStatus(200))
-    .catch(() => res.sendStatus(422));
+    .catch(() => res.sendStatus(400));
 }
