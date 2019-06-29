@@ -13,7 +13,7 @@ import path from 'path';
 import mongoUnit from 'mongo-unit';
 import chaiHttp from 'chai-http';
 import server from '../src/server';
-import Songs from '../src/api/song/song.model';
+import Songs from '../src/api/song/mongo-model';
 
 chai.should();
 chai.use(chaiHttp);

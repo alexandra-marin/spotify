@@ -1,4 +1,4 @@
-import Songs from './song.model';
+import Songs from './mongo-model';
 
 export default async function get(req, res) {
   try {

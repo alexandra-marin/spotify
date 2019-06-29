@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import rimraf from 'rimraf';
-import Songs from './song.model';
+import Songs from './mongo-model';
 import config from '../../config/config';
 
 export default async function remove(req, res) {
