@@ -9,17 +9,21 @@ export default {
   remove
 };
 
-function search(req, res) {
-  Songs.find({}, (err, songs) => {
-    if (err) res.sendStatus(400);
+async function search(req, res) {
+  try {
+    const songs = await Songs.find({});
     res.status(200).json(songs);
-  });
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(400);
+  }
 }
 
 async function get(req, res) {
   try {
-    const song = await Songs.find({ _id: req.params.id });
-    res.status(200).json(song);
+    const songs = await Songs.find({ _id: req.params.id });
+    if (songs.length === 0) res.sendStatus(404);
+    res.status(200).json(songs[0]);
   } catch (error) {
     console.error(error);
     res.sendStatus(400);
