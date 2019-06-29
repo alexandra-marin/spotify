@@ -6,10 +6,10 @@ import {
   before,
   after,
   it,
-  beforeEach
+  beforeEach,
+  afterEach
 } from 'mocha';
 import fs from 'fs';
-// import rimraf from 'rimraf';
 import path from 'path';
 import mongoUnit from 'mongo-unit';
 import chaiHttp from 'chai-http';
@@ -47,12 +47,17 @@ describe('Songs', () => {
       .then(() => done());
   });
 
-  after(() => {
-    mongoUnit.drop();
+  afterEach(async () => {
+    const songs = await Songs.find({});
+    songs.forEach(async ({ _id }) => {
+      await chai
+        .request(server.app)
+        .delete(`/api/v1/songs/${_id}`);
+    });
   });
 
-  beforeEach(async () => {
-    await Songs.collection.remove({});
+  after(() => {
+    mongoUnit.drop();
   });
 
   describe('/GET songs', () => {
@@ -141,7 +146,6 @@ describe('Songs', () => {
         .parse(binaryParser);
       contentResponse.should.have.status(200);
       contentResponse.body.should.be.deep.equal(songBytes);
-      // console.log(contentResponse);
     });
   });
 });
