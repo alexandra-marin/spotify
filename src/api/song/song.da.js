@@ -1,5 +1,5 @@
 import Q from 'q';
-import Todo from './todo.model';
+import Todo from './song.model';
 
 export default {
   getAll,

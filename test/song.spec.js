@@ -11,8 +11,7 @@ import {
 import mongoUnit from 'mongo-unit';
 import chaiHttp from 'chai-http';
 import server from '../src/server';
-import Songs from '../src/api/todo/todo.model';
-import { Mongoose } from 'mongoose';
+import Songs from '../src/api/song/song.model';
 
 chai.should();
 chai.use(chaiHttp);
@@ -65,33 +64,46 @@ describe('Songs', () => {
       songsResponse.body.should.be.a('array').with.lengthOf(1);
       songsResponse.body.should.be.deep.equal([JSON.parse(added.res.text)]);
     });
+
+    it('it should get one song', async () => {
+      const added = await addSongToStorage('Mock song');
+      const parsedSong = JSON.parse(added.res.text);
+
+      const songsResponse = await chai
+        .request(server.app)
+        .get(`/api/v1/songs/${parsedSong._id}`);
+
+      songsResponse.should.have.status(200);
+      songsResponse.body.should.be.deep.equal(parsedSong);
+    });
+
+    it('it should return 404 if song does not exist', async () => {
+      const added = await addSongToStorage('Mock song');
+      const parsedSong = JSON.parse(added.res.text);
+
+      await Songs.remove({ _id: parsedSong._id });
+
+      const songsResponse = await chai
+        .request(server.app)
+        .get(`/api/v1/songs/${parsedSong._id}`);
+
+      songsResponse.should.have.status(404);
+    });
+
+    it('it should get the second page of songs', async () => {
+      await addSongToStorage('Mock song');
+      const added = await addSongToStorage('Mock song 2');
+
+      const songsResponse = await chai
+        .request(server.app)
+        .get('/api/v1/songs')
+        .query({ page: 1, pageSize: 1 });
+
+      songsResponse.should.have.status(200);
+      songsResponse.body.should.be.a('array').with.lengthOf(1);
+      songsResponse.body.should.be.deep.equal([JSON.parse(added.res.text)]);
+    });
   });
-
-  it('it should get one song', async () => {
-    const added = await addSongToStorage('Mock song');
-    const parsedSong = JSON.parse(added.res.text);
-
-    const songsResponse = await chai
-      .request(server.app)
-      .get(`/api/v1/songs/${parsedSong._id}`);
-
-    songsResponse.should.have.status(200);
-    songsResponse.body.should.be.deep.equal(parsedSong);
-  });
-
-  it('it should return 404 if song does not exist', async () => {
-    const added = await addSongToStorage('Mock song');
-    const parsedSong = JSON.parse(added.res.text);
-
-    await Songs.remove({ _id: parsedSong._id });
-
-    const songsResponse = await chai
-      .request(server.app)
-      .get(`/api/v1/songs/${parsedSong._id}`);
-
-    songsResponse.should.have.status(404);
-  });
-  // });
 
   // describe('/POST todo', () => {
   //   it('should create a todo with a name property', done => {

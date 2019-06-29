@@ -1,5 +1,5 @@
 import express from 'express';
-import ctrl from './todo.ctrl';
+import ctrl from './song.ctrl';
 
 const router = express.Router();
 
