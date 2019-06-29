@@ -1,12 +1,9 @@
-import TodoDa from './song.da';
 import Songs from './song.model';
 
 export default {
   search,
   get,
-  update,
-  create,
-  remove
+  create
 };
 
 async function search(req, res) {
@@ -37,15 +34,6 @@ async function get(req, res) {
   }
 }
 
-function update(req, res) {
-  const { id } = req.params;
-  const { name, completed } = req.body;
-
-  TodoDa.update(id, name, completed)
-    .then(() => res.sendStatus(200))
-    .catch(() => res.sendStatus(400));
-}
-
 async function create(req, res) {
   try {
     const song = new Songs(req.body);
@@ -55,12 +43,4 @@ async function create(req, res) {
     console.error(error);
     res.sendStatus(400);
   }
-}
-
-function remove(req, res) {
-  const { id } = req.params;
-
-  TodoDa.remove(id)
-    .then(() => res.sendStatus(200))
-    .catch(() => res.sendStatus(400));
 }

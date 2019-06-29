@@ -9,16 +9,8 @@ class Server {
   constructor() {
     this.app = express();
     this.config = config;
-
-    // this.init();
-
-    // HTTP request logger
     this.app.use(morgan('dev'));
-
-    // express settings
     expressConfig(this.app);
-
-    // initialize api
     routesConfig(this.app);
 
     // start server
@@ -28,7 +20,6 @@ class Server {
   }
 
   init(url) {
-    // connect to database
     mongoose.connect(
       url || this.config.db,
       err => {

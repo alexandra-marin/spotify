@@ -8,6 +8,9 @@ const SongsSchema = new mongoose.Schema({
   created: {
     type: Date,
     default: Date.now
+  },
+  uri: {
+    type: String
   }
 });
 

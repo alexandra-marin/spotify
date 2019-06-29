@@ -16,12 +16,6 @@ router
   .route('/songs/:id')
 
   // GET /api/v1/songs/:id - Get one song metadata
-  .get(ctrl.get)
-
-  // DELETE /api/v1/songs/:id - Delete song
-  .delete(ctrl.remove)
-
-  // PUT /api/v1/songs/:id - Update song
-  .put(ctrl.update);
+  .get(ctrl.get);
 
 export default router;
