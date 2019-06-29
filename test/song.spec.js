@@ -9,6 +9,7 @@ import {
   beforeEach
 } from 'mocha';
 import fs from 'fs';
+// import rimraf from 'rimraf';
 import path from 'path';
 import mongoUnit from 'mongo-unit';
 import chaiHttp from 'chai-http';
@@ -17,6 +18,18 @@ import Songs from '../src/api/song/song.model';
 
 chai.should();
 chai.use(chaiHttp);
+
+
+const binaryParser = (res, cb) => {
+  res.setEncoding('binary');
+  res.data = '';
+  res.on('data', (chunk) => {
+    res.data += chunk;
+  });
+  res.on('end', () => {
+    cb(null, new Buffer(res.data, "binary"));
+  });
+};
 
 async function addSongToStorage(name) {
   const song = await chai
@@ -110,14 +123,25 @@ describe('Songs', () => {
       const parsedSong = JSON.parse(added.res.text);
 
       const song = path.resolve(__dirname, './test.mp3');
+      const songBytes = fs.readFileSync(song);
 
       const songsResponse = await chai
         .request(server.app)
         .post(`/api/v1/upload-song/${parsedSong._id}`)
-        .attach('song', fs.readFileSync(song), 'test.mp3');
+        .attach('song', songBytes, 'test.mp3');
 
       songsResponse.should.have.status(200);
-      songsResponse.body.should.be.deep.equal(parsedSong);
+      songsResponse.body.should.have.property('uri');
+
+      const { uri } = songsResponse.body;
+      const contentResponse = await chai
+        .request(server.app)
+        .get(uri)
+        .buffer()
+        .parse(binaryParser);
+      contentResponse.should.have.status(200);
+      contentResponse.body.should.be.deep.equal(songBytes);
+      // console.log(contentResponse);
     });
   });
 });
