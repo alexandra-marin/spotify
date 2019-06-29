@@ -6,7 +6,6 @@ import {
   before,
   after,
   it,
-  beforeEach,
   afterEach
 } from 'mocha';
 import fs from 'fs';
