@@ -26,7 +26,7 @@ const binaryParser = (res, cb) => {
     res.data += chunk;
   });
   res.on('end', () => {
-    cb(null, new Buffer(res.data, "binary"));
+    cb(null, Buffer.from(res.data, 'binary'));
   });
 };
 
@@ -48,11 +48,13 @@ describe('Songs', () => {
 
   afterEach(async () => {
     const songs = await Songs.find({});
-    songs.forEach(async ({ _id }) => {
-      await chai
-        .request(server.app)
-        .delete(`/api/v1/songs/${_id}`);
-    });
+
+    const removals = [];
+    songs.forEach(({ _id }) => removals
+      .push(chai.request(server.app)
+        .delete(`/api/v1/songs/${_id}`)));
+
+    await Promise.all(removals);
   });
 
   after(() => {
