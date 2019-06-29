@@ -8,6 +8,8 @@ import {
   it,
   beforeEach
 } from 'mocha';
+import fs from 'fs';
+import path from 'path';
 import mongoUnit from 'mongo-unit';
 import chaiHttp from 'chai-http';
 import server from '../src/server';
@@ -99,6 +101,23 @@ describe('Songs', () => {
       songsResponse.should.have.status(200);
       songsResponse.body.should.be.a('array').with.lengthOf(1);
       songsResponse.body.should.be.deep.equal([JSON.parse(added.res.text)]);
+    });
+  });
+
+  describe('upload', () => {
+    it('should upload content for existing song', async () => {
+      const added = await addSongToStorage('Mock song');
+      const parsedSong = JSON.parse(added.res.text);
+
+      const song = path.resolve(__dirname, './test.mp3');
+
+      const songsResponse = await chai
+        .request(server.app)
+        .post(`/api/v1/upload-song/${parsedSong._id}`)
+        .attach('song', fs.readFileSync(song), 'test.mp3');
+
+      songsResponse.should.have.status(200);
+      songsResponse.body.should.be.deep.equal(parsedSong);
     });
   });
 });

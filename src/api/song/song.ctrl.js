@@ -3,7 +3,8 @@ import Songs from './song.model';
 export default {
   search,
   get,
-  create
+  create,
+  upload
 };
 
 async function search(req, res) {
@@ -26,7 +27,10 @@ async function search(req, res) {
 async function get(req, res) {
   try {
     const songs = await Songs.find({ _id: req.params.id });
-    if (songs.length === 0) res.sendStatus(404);
+    if (songs.length === 0) {
+      res.sendStatus(404);
+      return;
+    }
     res.status(200).json(songs[0]);
   } catch (error) {
     console.error(error);
@@ -39,6 +43,24 @@ async function create(req, res) {
     const song = new Songs(req.body);
     const savedSong = await song.save();
     res.status(201).json(savedSong);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(400);
+  }
+}
+
+async function upload(req, res) {
+  try {
+    // console.log(req);
+    console.log(req.files);
+    const songs = await Songs.find({ _id: req.params.id });
+    if (songs.length === 0) {
+      res.sendStatus(404);
+      return;
+    }
+
+    const song = songs[0];
+
   } catch (error) {
     console.error(error);
     res.sendStatus(400);

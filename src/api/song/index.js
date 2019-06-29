@@ -18,4 +18,10 @@ router
   // GET /api/v1/songs/:id - Get one song metadata
   .get(ctrl.get);
 
+router
+  .route('/upload-song/:id')
+
+  // POST /api/v1/upload-song/:id - Upload song
+  .post(ctrl.upload);
+
 export default router;
