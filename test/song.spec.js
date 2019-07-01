@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 import chai from 'chai';
 import {
   describe,

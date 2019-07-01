@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import fs from 'fs';
 import Songs from '../../../mongo/song-model';
 import config from '../../../config';
