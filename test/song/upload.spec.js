@@ -5,11 +5,7 @@ import {
 } from 'mocha';
 import fs from 'fs';
 import path from 'path';
-import chaiHttp from 'chai-http';
 import app from '../setup';
-
-chai.should();
-chai.use(chaiHttp);
 
 const binaryParser = (res, cb) => {
   res.setEncoding('binary');

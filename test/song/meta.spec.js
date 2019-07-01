@@ -3,12 +3,8 @@ import {
   describe,
   it
 } from 'mocha';
-import chaiHttp from 'chai-http';
 import Songs from '../../src/mongo/song-model';
 import app from '../setup';
-
-chai.should();
-chai.use(chaiHttp);
 
 async function addSongToStorage(name) {
   const song = await chai
