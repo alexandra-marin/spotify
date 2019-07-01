@@ -8,7 +8,10 @@ const defaultConfig = {
   db: 'mongodb://localhost:27017/songs',
   realMongo: true,
   apiPort: 3000,
-  fileStorage: '/tmp'
+  fileUpload: {
+    storage: '/tmp',
+    maxSize: 50 * 1024 * 1024
+  }
 };
 
 /**
@@ -46,8 +49,8 @@ function loadConfig() {
 
   // merge default config with environment specific config
   const myConfig = Object.assign({}, defaultConfig, envConfig[env]);
-  if (myConfig.fileStorage.indexOf('/')) {
-    myConfig.fileStorage = path.resolve(__dirname, myConfig.fileStorage);
+  if (myConfig.fileUpload.storage.indexOf('/')) {
+    myConfig.fileUpload.storage = path.resolve(__dirname, myConfig.fileUpload.storage);
   }
   return myConfig;
 }

@@ -10,7 +10,7 @@ export default express => express.route('/api/v1/upload-song/:id').post(async (r
       return;
     }
     const song = songs[0];
-    const folder = `${config.fileStorage}/${song._id}`;
+    const folder = `${config.fileUpload.storage}/${song._id}`;
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder);
     }
