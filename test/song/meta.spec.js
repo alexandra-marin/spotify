@@ -1,36 +1,14 @@
 import chai from 'chai';
 import {
   describe,
-  before,
-  after,
-  it,
-  afterEach
+  it
 } from 'mocha';
-import fs from 'fs';
-import path from 'path';
-import mongoUnit from 'mongo-unit';
 import chaiHttp from 'chai-http';
-import mongoose from 'mongoose';
-import config from '../src/config';
-import express from '../src/express';
-import connect from '../src/mongo/connect';
-import Songs from '../src/mongo/song-model';
+import Songs from '../../src/mongo/song-model';
+import app from '../setup';
 
 chai.should();
 chai.use(chaiHttp);
-
-let app;
-
-const binaryParser = (res, cb) => {
-  res.setEncoding('binary');
-  res.data = '';
-  res.on('data', (chunk) => {
-    res.data += chunk;
-  });
-  res.on('end', () => {
-    cb(null, Buffer.from(res.data, 'binary'));
-  });
-};
 
 async function addSongToStorage(name) {
   const song = await chai
@@ -42,39 +20,6 @@ async function addSongToStorage(name) {
 }
 
 describe('Songs', () => {
-  before(async () => {
-    app = express();
-    if (config.realMongo) {
-      await connect();
-    } else {
-      const url = await mongoUnit.start();
-      await connect(url);
-    }
-  });
-
-  afterEach(async () => {
-    const songs = await Songs.find({});
-
-    const removals = [];
-    songs.forEach(({ _id }) => removals
-      .push(chai.request(app)
-        .delete(`/api/v1/songs/${_id}`)));
-
-    await Promise.all(removals);
-  });
-
-  after(async () => {
-    try {
-      app.close();
-      await mongoose.disconnect();
-    } catch (error) {
-      if (!config.realMongo) {
-        await mongoUnit.drop();
-      }
-      throw error;
-    }
-  });
-
   describe('/GET songs', () => {
     it('it should get a empty list of songs', async () => {
       const res = await chai
@@ -131,33 +76,6 @@ describe('Songs', () => {
       songsResponse.should.have.status(200);
       songsResponse.body.should.be.a('array').with.lengthOf(1);
       songsResponse.body.should.be.deep.equal([JSON.parse(added.res.text)]);
-    });
-  });
-
-  describe('upload', () => {
-    it('should post content for existing song', async () => {
-      const added = await addSongToStorage('Mock song');
-      const parsedSong = JSON.parse(added.res.text);
-
-      const song = path.resolve(__dirname, './test.mp3');
-      const songBytes = fs.readFileSync(song);
-
-      const songsResponse = await chai
-        .request(app)
-        .post(`/api/v1/upload-song/${parsedSong._id}`)
-        .attach('song', songBytes, 'test.mp3');
-
-      songsResponse.should.have.status(200);
-      songsResponse.body.should.have.property('uri');
-
-      const { uri } = songsResponse.body;
-      const contentResponse = await chai
-        .request(app)
-        .get(uri)
-        .buffer()
-        .parse(binaryParser);
-      contentResponse.should.have.status(200);
-      contentResponse.body.should.be.deep.equal(songBytes);
     });
   });
 });
