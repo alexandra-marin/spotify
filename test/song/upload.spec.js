@@ -27,31 +27,29 @@ async function addSongToStorage(name) {
   return song;
 }
 
-describe('Songs', () => {
-  describe('upload', () => {
-    it('should post content for existing song', async () => {
-      const added = await addSongToStorage('Mock song');
-      const parsedSong = JSON.parse(added.res.text);
+describe('Songs upload', () => {
+  it('should post content for existing song', async () => {
+    const added = await addSongToStorage('Mock song');
+    const parsedSong = JSON.parse(added.res.text);
 
-      const song = path.resolve(__dirname, './test.mp3');
-      const songBytes = fs.readFileSync(song);
+    const song = path.resolve(__dirname, './test.mp3');
+    const songBytes = fs.readFileSync(song);
 
-      const songsResponse = await chai
-        .request(app)
-        .post(`/api/v1/upload-song/${parsedSong._id}`)
-        .attach('song', songBytes, 'test.mp3');
+    const songsResponse = await chai
+      .request(app)
+      .post(`/api/v1/upload-song/${parsedSong._id}`)
+      .attach('song', songBytes, 'test.mp3');
 
-      songsResponse.should.have.status(200);
-      songsResponse.body.should.have.property('uri');
+    songsResponse.should.have.status(200);
+    songsResponse.body.should.have.property('uri');
 
-      const { uri } = songsResponse.body;
-      const contentResponse = await chai
-        .request(app)
-        .get(uri)
-        .buffer()
-        .parse(binaryParser);
-      contentResponse.should.have.status(200);
-      contentResponse.body.should.be.deep.equal(songBytes);
-    });
+    const { uri } = songsResponse.body;
+    const contentResponse = await chai
+      .request(app)
+      .get(uri)
+      .buffer()
+      .parse(binaryParser);
+    contentResponse.should.have.status(200);
+    contentResponse.body.should.be.deep.equal(songBytes);
   });
 });
