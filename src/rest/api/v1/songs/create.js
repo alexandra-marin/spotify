@@ -1,6 +1,6 @@
-import Songs from './mongo-model';
+import Songs from '../../../../mongo/song-model';
 
-export default async function create(req, res) {
+export default express => express.route('/api/v1/songs').post(async (req, res) => {
   try {
     const song = new Songs(req.body);
     const savedSong = await song.save();
@@ -9,4 +9,4 @@ export default async function create(req, res) {
     console.error(error);
     res.sendStatus(400);
   }
-}
+});

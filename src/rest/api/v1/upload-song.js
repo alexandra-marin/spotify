@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import fs from 'fs';
-import Songs from './mongo-model';
-import config from '../../config/config';
+import Songs from '../../../mongo/song-model';
+import config from '../../../config';
 
-export default async function upload(req, res) {
+export default express => express.route('/api/v1/upload-song/:id').post(async (req, res) => {
   try {
     const songs = await Songs.find({ _id: req.params.id });
     if (songs.length === 0) {
@@ -28,4 +28,4 @@ export default async function upload(req, res) {
     console.error(error);
     res.sendStatus(400);
   }
-}
+});

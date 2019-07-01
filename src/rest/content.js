@@ -1,7 +1,7 @@
 import fs from 'fs';
-import config from '../../config/config';
+import config from '../config';
 
-export default async (req, res) => {
+export default express => express.route('/content/:id/:filename').get(async (req, res) => {
   try {
     const file = `${config.fileStorage}/${req.params.id}/${req.params.filename}`;
     if (!fs.existsSync(file)) {
@@ -13,4 +13,4 @@ export default async (req, res) => {
     console.error(error);
     res.sendStatus(400);
   }
-};
+});

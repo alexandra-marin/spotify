@@ -1,6 +1,6 @@
-import Songs from './mongo-model';
+import Songs from '../../../../mongo/song-model';
 
-export default async function get(req, res) {
+export default express => express.route('/api/v1/songs/:id').get(async (req, res) => {
   try {
     const songs = await Songs.find({ _id: req.params.id });
     if (songs.length === 0) {
@@ -12,4 +12,4 @@ export default async function get(req, res) {
     console.error(error);
     res.sendStatus(400);
   }
-}
+});

@@ -1,6 +1,6 @@
-import Songs from './mongo-model';
+import Songs from '../../../../mongo/song-model';
 
-export default async function search(req, res) {
+export default express => express.route('/api/v1/songs').get(async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10);
     const pageSize = parseInt(req.query.pageSize, 10) || 100;
@@ -13,4 +13,4 @@ export default async function search(req, res) {
     console.error(error);
     res.sendStatus(400);
   }
-}
+});

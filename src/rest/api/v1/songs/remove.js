@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import rimraf from 'rimraf';
-import Songs from './mongo-model';
-import config from '../../config/config';
+import Songs from '../../../../mongo/song-model';
+import config from '../../../../config';
 
-export default async function remove(req, res) {
+export default express => express.route('/api/v1/songs/:id').delete(async (req, res) => {
   try {
     const songs = await Songs.find({ _id: req.params.id });
     if (songs.length === 0) {
@@ -20,4 +20,4 @@ export default async function remove(req, res) {
     console.error(error);
     res.sendStatus(400);
   }
-}
+});

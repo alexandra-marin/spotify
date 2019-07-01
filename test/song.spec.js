@@ -12,12 +12,16 @@ import fs from 'fs';
 import path from 'path';
 import mongoUnit from 'mongo-unit';
 import chaiHttp from 'chai-http';
-import server from '../src/server';
-import Songs from '../src/api/song/mongo-model';
+import mongoose from 'mongoose';
+import config from '../src/config';
+import express from '../src/express';
+import connect from '../src/mongo/connect';
+import Songs from '../src/mongo/song-model';
 
 chai.should();
 chai.use(chaiHttp);
 
+let app;
 
 const binaryParser = (res, cb) => {
   res.setEncoding('binary');
@@ -32,7 +36,7 @@ const binaryParser = (res, cb) => {
 
 async function addSongToStorage(name) {
   const song = await chai
-    .request(server.app)
+    .request(app)
     .post('/api/v1/songs')
     .send({ name });
 
@@ -41,9 +45,15 @@ async function addSongToStorage(name) {
 
 describe('Songs', () => {
   before(done => {
-    mongoUnit.start()
-      .then(url => server.init(url))
-      .then(() => done());
+    app = express();
+    if (config.realMongo) {
+      connect();
+      done();
+    } else {
+      mongoUnit.start()
+        .then(url => connect(url))
+        .then(() => done());
+    }
   });
 
   afterEach(async () => {
@@ -51,20 +61,27 @@ describe('Songs', () => {
 
     const removals = [];
     songs.forEach(({ _id }) => removals
-      .push(chai.request(server.app)
+      .push(chai.request(app)
         .delete(`/api/v1/songs/${_id}`)));
 
     await Promise.all(removals);
   });
 
-  after(() => {
-    mongoUnit.drop();
+  after((done) => {
+    app.close();
+    mongoose.disconnect().then(err => {
+      if (!config.realMongo) {
+        mongoUnit.drop().then(err1 => done(err1));
+      } else {
+        done(err);
+      }
+    });
   });
 
   describe('/GET songs', () => {
     it('it should get a empty list of songs', done => {
       chai
-        .request(server.app)
+        .request(app)
         .get('/api/v1/songs')
         .end((err, res) => {
           res.should.have.status(200);
@@ -76,7 +93,7 @@ describe('Songs', () => {
     it('it should get a list of songs', async () => {
       const added = await addSongToStorage('Mock song');
       const songsResponse = await chai
-        .request(server.app)
+        .request(app)
         .get('/api/v1/songs');
       songsResponse.should.have.status(200);
       songsResponse.body.should.be.a('array').with.lengthOf(1);
@@ -88,7 +105,7 @@ describe('Songs', () => {
       const parsedSong = JSON.parse(added.res.text);
 
       const songsResponse = await chai
-        .request(server.app)
+        .request(app)
         .get(`/api/v1/songs/${parsedSong._id}`);
 
       songsResponse.should.have.status(200);
@@ -102,7 +119,7 @@ describe('Songs', () => {
       await Songs.remove({ _id: parsedSong._id });
 
       const songsResponse = await chai
-        .request(server.app)
+        .request(app)
         .get(`/api/v1/songs/${parsedSong._id}`);
 
       songsResponse.should.have.status(404);
@@ -113,7 +130,7 @@ describe('Songs', () => {
       const added = await addSongToStorage('Mock song 2');
 
       const songsResponse = await chai
-        .request(server.app)
+        .request(app)
         .get('/api/v1/songs')
         .query({ page: 1, pageSize: 1 });
 
@@ -124,7 +141,7 @@ describe('Songs', () => {
   });
 
   describe('upload', () => {
-    it('should upload content for existing song', async () => {
+    it('should post content for existing song', async () => {
       const added = await addSongToStorage('Mock song');
       const parsedSong = JSON.parse(added.res.text);
 
@@ -132,7 +149,7 @@ describe('Songs', () => {
       const songBytes = fs.readFileSync(song);
 
       const songsResponse = await chai
-        .request(server.app)
+        .request(app)
         .post(`/api/v1/upload-song/${parsedSong._id}`)
         .attach('song', songBytes, 'test.mp3');
 
@@ -141,7 +158,7 @@ describe('Songs', () => {
 
       const { uri } = songsResponse.body;
       const contentResponse = await chai
-        .request(server.app)
+        .request(app)
         .get(uri)
         .buffer()
         .parse(binaryParser);

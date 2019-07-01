@@ -14,4 +14,5 @@ const SongsSchema = new mongoose.Schema({
   }
 });
 
+delete mongoose.connection.models.Song;
 export default mongoose.model('Song', SongsSchema);

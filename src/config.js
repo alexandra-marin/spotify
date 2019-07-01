@@ -1,9 +1,12 @@
+import path from 'path';
+
 /**
  * Default config for all environment types
  * @type {{db: string, apiPort: number}}
  */
 const defaultConfig = {
   db: 'mongodb://localhost:27017/songs',
+  realMongo: true,
   apiPort: 3000,
   fileStorage: '/tmp'
 };
@@ -16,7 +19,12 @@ const envConfig = {
   prod: {},
   dev: {},
   test: {
-    apiPort: 3100
+    apiPort: 3100,
+    realMongo: false
+  },
+  testRealMongo: {
+    apiPort: 3100,
+    fileStorage: '.'
   }
 };
 
@@ -34,11 +42,14 @@ function loadConfig() {
       )}'`
     );
   }
-
   console.log('[INFO] config loaded for environment: ', env);
 
   // merge default config with environment specific config
-  return Object.assign({}, defaultConfig, envConfig[env]);
+  const myConfig = Object.assign({}, defaultConfig, envConfig[env]);
+  if (myConfig.fileStorage.indexOf('/')) {
+    myConfig.fileStorage = path.resolve(__dirname, myConfig.fileStorage);
+  }
+  return myConfig;
 }
 
 export default loadConfig();
