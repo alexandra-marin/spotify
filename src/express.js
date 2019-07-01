@@ -10,16 +10,19 @@ Object.values(rest).forEach(api => api(router));
 
 export default () => {
   const app = express();
+
   app.use(morgan('dev'));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
-  app.use(fileUpload({
-    limits: { fileSize: 50 * 1024 * 1024 }
-  }));
+  app.use(fileUpload({ limits: { fileSize: 50 * 1024 * 1024 } }));
+
   app.use('/', router);
+
   const server = app.listen(config.apiPort, () => {
     console.log(`[Server] listening on port ${config.apiPort}`);
   });
+
   app.close = () => server.close();
+
   return app;
 };

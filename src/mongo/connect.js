@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import config from '../config';
 
-export default url => {
+export default (url) => {
   mongoose.connect(
     url || config.db,
-    err => {
+    (err) => {
       if (err) {
         console.log(`[MongoDB] Failed to connect. ${err}`);
       } else {

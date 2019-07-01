@@ -1,7 +1,9 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 import fs from 'fs';
 import path from 'path';
 
-const exportRecursively = (dir) => fs.readdirSync(dir).forEach(file => {
+const exportRecursively = dir => fs.readdirSync(dir).forEach((file) => {
   if (file === 'index.js') {
     return;
   }
