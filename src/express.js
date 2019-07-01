@@ -15,6 +15,7 @@ export default () => {
   app.use(fileUpload({ limits: { fileSize: config.fileUpload.maxSize } }));
 
   const router = express.Router();
+  // Register all JS modules in API as routes
   Object.values(rest).forEach(api => api(router));
   app.use('/', router);
 
