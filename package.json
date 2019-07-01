@@ -38,10 +38,10 @@
     "test": "NODE_ENV=test mocha --require babel-register --require test/setup.js --recursive --exit --timeout 30000",
     "coverage": "nyc --reporter=lcov npm run test",
     "test-win": "set NODE_ENV=test&mocha --exit --timeout 30000",
-    "test-real-mongo": "NODE_ENV=testRealMongo mocha --require babel-register --require test/setup.js --recursive --exit --timeout 30000",
-    "test-real-mongo-win": "set NODE_ENV=testRealMongo&mocha --require babel-register --require test/setup.js --recursive --exit --timeout 30000",
-    "test:watch": "NODE_ENV=test mocha --watch --recursive --require --require babel-register test/setup.js --timeout 30000",
-    "test-win:watch": "set NODE_ENV=test&mocha --require babel-register --require test/setup.js --recursive --timeout 10000 --watch",
-    "test-real-mongo-win:watch": "set NODE_ENV=testRealMongo&mocha --require babel-register --require test/setup.js --recursive --timeout 10000 --watch"
+    "test-real-mongo": "NODE_ENV=testRealMongo & npm run test",
+    "test-real-mongo-win": "set NODE_ENV=testRealMongo & npm run test",
+    "test:watch": "NODE_ENV=test mocha --watch --recursive --require babel-register --require test/setup.js --timeout 30000",
+    "test-win:watch": "set NODE_ENV=test & npm run test:watch",
+    "test-real-mongo-win:watch": "set NODE_ENV=testRealMongo & npm run test:watch"
   }
 }
