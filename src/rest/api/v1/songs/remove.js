@@ -9,11 +9,12 @@ export default express => express.route('/api/v1/songs/:id').delete(async (req, 
       res.sendStatus(404);
       return;
     }
+
     const song = songs[0];
     const folder = `${config.fileUpload.storage}/${song._id}`;
     rimraf.sync(folder);
-    const deleted = await Songs.remove({ _id: req.params.id });
-    console.log(deleted);
+    await Songs.remove({ _id: req.params.id });
+
     res.sendStatus(200);
   } catch (error) {
     console.error(error);
