@@ -44,7 +44,7 @@
     "test-win": "set NODE_ENV=test&mocha --exit --timeout 30000 --compilers js:babel-register",
     "test-real-mongo": "NODE_ENV=testRealMongo mocha --exit --timeout 30000 --compilers js:babel-register",
     "test-real-mongo-win": "set NODE_ENV=testRealMongo&mocha --exit --timeout 30000 --compilers js:babel-register",
-    "test:watch": "NODE_ENV=test mocha --timeout 30000 --compilers js:babel-register",
+    "test:watch": "NODE_ENV=test mocha --watch --recursive --require test/setup.js --timeout 30000 --compilers js:babel-register",
     "test-win:watch": "set NODE_ENV=test&mocha --timeout 10000 --compilers js:babel-register --watch",
     "test-real-mongo-win:watch": "set NODE_ENV=testRealMongo&mocha --timeout 10000 --compilers js:babel-register --watch"
   }
