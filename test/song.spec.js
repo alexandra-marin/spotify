@@ -42,15 +42,13 @@ async function addSongToStorage(name) {
 }
 
 describe('Songs', () => {
-  before(done => {
+  before(async () => {
     app = express();
     if (config.realMongo) {
-      connect();
-      done();
+      await connect();
     } else {
-      mongoUnit.start()
-        .then(url => connect(url))
-        .then(() => done());
+      const url = await mongoUnit.start();
+      await connect(url);
     }
   });
 
@@ -65,27 +63,25 @@ describe('Songs', () => {
     await Promise.all(removals);
   });
 
-  after((done) => {
-    app.close();
-    mongoose.disconnect().then(err => {
+  after(async () => {
+    try {
+      app.close();
+      await mongoose.disconnect();
+    } catch (error) {
       if (!config.realMongo) {
-        mongoUnit.drop().then(err1 => done(err1));
-      } else {
-        done(err);
+        await mongoUnit.drop();
       }
-    });
+      throw error;
+    }
   });
 
   describe('/GET songs', () => {
-    it('it should get a empty list of songs', done => {
-      chai
+    it('it should get a empty list of songs', async () => {
+      const res = await chai
         .request(app)
-        .get('/api/v1/songs')
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('array').with.lengthOf(0);
-          done();
-        });
+        .get('/api/v1/songs');
+      res.should.have.status(200);
+      res.body.should.be.a('array').with.lengthOf(0);
     });
 
     it('it should get a list of songs', async () => {
