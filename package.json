@@ -1,37 +1,33 @@
 {
-  "name": "es6-express-mongoose-starter",
-  "version": "0.0.5",
-  "description": "Express & Mongoose starter kit written in ES6 for NodeJS.",
+  "name": "spotify",
+  "version": "0.0.1",
+  "description": "Express & Mongoose API - ES6 / NodeJS.",
   "main": "src/server.js",
   "repository": {
-    "type": "git",
-    "url": "https://github.com/patrickvaler/es6-express-mongoose-starter.git"
+    "type": "git"
   },
-  "author": "Patrick Valer <hello@patrickvaler.ch>",
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "body-parser": "^1.18.3",
-    "express": "^4.16.3",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
     "express-fileupload": "^1.1.5",
     "mongoose": "^5.6.2",
     "morgan": "^1.9.1",
-    "q": "^1.5.1",
     "rimraf": "^2.6.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-eslint": "^8.2.6",
+    "babel-eslint": "^10.0.2",
     "babel-preset-node6": "^11.0.0",
-    "chai": "^4.1.2",
-    "chai-http": "^4.0.0",
-    "eslint": "^5.3.0",
-    "eslint-config-airbnb-base": "^13.0.0",
-    "eslint-plugin-import": "^2.13.0",
-    "mocha": "^5.2.0",
-    "mockgoose": "^7.3.5",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "eslint": "^6.0.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.18.0",
+    "mocha": "^6.1.4",
     "mongo-unit": "^1.4.4",
-    "nodemon": "^1.18.3",
+    "nodemon": "^1.19.1",
     "nyc": "^14.1.1"
   },
   "scripts": {
@@ -39,13 +35,13 @@
     "serve-win": "set NODE_ENV=dev&nodemon src/server.js --exec \"npm run lint -s && babel-node\"",
     "build": "babel src --out-dir build",
     "lint": "./node_modules/.bin/eslint --fix src",
-    "test": "NODE_ENV=test mocha --recursive --require test/setup.js --exit --timeout 30000 --compilers js:babel-register",
+    "test": "NODE_ENV=test mocha --require babel-register --require test/setup.js --recursive --exit --timeout 30000",
     "coverage": "nyc --reporter=lcov npm run test",
-    "test-win": "set NODE_ENV=test&mocha --exit --timeout 30000 --compilers js:babel-register",
-    "test-real-mongo": "NODE_ENV=testRealMongo mocha --exit --timeout 30000 --compilers js:babel-register",
-    "test-real-mongo-win": "set NODE_ENV=testRealMongo&mocha --exit --timeout 30000 --compilers js:babel-register",
-    "test:watch": "NODE_ENV=test mocha --watch --recursive --require test/setup.js --timeout 30000 --compilers js:babel-register",
-    "test-win:watch": "set NODE_ENV=test&mocha --timeout 10000 --compilers js:babel-register --watch",
-    "test-real-mongo-win:watch": "set NODE_ENV=testRealMongo&mocha --timeout 10000 --compilers js:babel-register --watch"
+    "test-win": "set NODE_ENV=test&mocha --exit --timeout 30000",
+    "test-real-mongo": "NODE_ENV=testRealMongo mocha --require babel-register --require test/setup.js --recursive --exit --timeout 30000",
+    "test-real-mongo-win": "set NODE_ENV=testRealMongo&mocha --require babel-register --require test/setup.js --recursive --exit --timeout 30000",
+    "test:watch": "NODE_ENV=test mocha --watch --recursive --require --require babel-register test/setup.js --timeout 30000",
+    "test-win:watch": "set NODE_ENV=test&mocha --require babel-register --require test/setup.js --recursive --timeout 10000 --watch",
+    "test-real-mongo-win:watch": "set NODE_ENV=testRealMongo&mocha --require babel-register --require test/setup.js --recursive --timeout 10000 --watch"
   }
 }
