@@ -17,7 +17,7 @@
     "rimraf": "^2.6.3"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
+    "@babel/cli": "^7.4.4",
     "babel-eslint": "^10.0.2",
     "babel-preset-node6": "^11.0.0",
     "chai": "^4.2.0",
@@ -39,9 +39,7 @@
     "coverage": "nyc --reporter=lcov npm run test",
     "test-win": "set NODE_ENV=test&mocha --exit --timeout 30000",
     "test-real-mongo": "NODE_ENV=testRealMongo & npm run test",
-    "test-real-mongo-win": "set NODE_ENV=testRealMongo & npm run test",
     "test:watch": "NODE_ENV=test mocha --watch --recursive --require babel-register --require test/setup.js --timeout 30000",
-    "test-win:watch": "set NODE_ENV=test & npm run test:watch",
-    "test-real-mongo-win:watch": "set NODE_ENV=testRealMongo & npm run test:watch"
+    "test-win:watch": "set NODE_ENV=test & npm run test:watch"
   }
 }
