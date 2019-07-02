@@ -17,10 +17,11 @@ $ node build/server.js
 ```
 
 ### :muscle: Test
-Tests are created with Mocha, Chai and mongo-unit.
+Tests are created with Mocha, Chai and mongo-unit. NYC reports code coverage.
 
 ```bash
 $ npm test
+$ npm run coverage
 ```
 
 ### :floppy_disk: Storage
@@ -31,5 +32,5 @@ You can overwrite these default settings for each environment in `src/config.js`
 - add minifier to reduce bundle size
 - find better to import folders and subfolders
 - add CI/CD
-- add static analysis tool
+- add static analysis tool and reporter
 - replace content api with static server (e.g. nginX)
