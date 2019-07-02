@@ -1,5 +1,7 @@
 ## Getting Started
 
+Backend kata using ExpressJS. Stores songs on a local directory and uses Mongo to save song metadata. Exposes REST API to create, read and delete metadata and to upload binary content. 
+
 ### :wave: Clone project & install dependencies
 ```bash
 $ git clone git@github.com:alexandra-marin/spotify.git
